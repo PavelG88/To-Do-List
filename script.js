@@ -1,8 +1,8 @@
 class toDoList {
     constructor(task) {
-        this.list = [task];
-        this.countTask = 2;
-        this.flag = 0;
+        this.list = [...task];
+        this.countTask = this.list.length + 1;
+        this.sortDirection = 0;
     }
     /** 
      * Инициализации методов класса
@@ -10,7 +10,9 @@ class toDoList {
     init() {
         this.setEventListenerForButton();
         this.setEventListenerForSort();
-        this.setEventListenerForRemove(document.querySelector('.task__img'));
+        document.querySelectorAll('.task__img').forEach((element) => {
+            this.setEventListenerForRemove(element);
+        });      
         // console.log(this.list);
     }
 
@@ -37,23 +39,23 @@ class toDoList {
         let sort = document.querySelector('.sort__img');
         //Событие при наведении мыши на сортировку
         sort.addEventListener('mouseover', () => {
-            sort.src = this.flag !== -1 ? 'images/4.svg' : 'images/2.svg';
+            sort.src = this.sortDirection !== -1 ? 'images/4.svg' : 'images/2.svg';
         });
         //Событие при убирании курсора с сортировки
         sort.addEventListener('mouseout', () => {
-            sort.src = this.flag !== -1 ? 'images/3.svg' : 'images/1.svg';
+            sort.src = this.sortDirection !== -1 ? 'images/3.svg' : 'images/1.svg';
         });
-        //Событие при нажатии на крестик
+        //Событие при нажатии на сортировку
         sort.addEventListener('click', () => {
             this.sort();
-            this.flag = this.flag === 1 ? -1 : 1;
-            sort.src = this.flag === 1 ? 'images/4.svg' : 'images/2.svg';
+            this.sortDirection = this.sortDirection === 1 ? -1 : 1;
+            sort.src = this.sortDirection === 1 ? 'images/4.svg' : 'images/2.svg';
         });
     }
  
     /**
      * Обработчик событий при наведении или нажатии на крестик
-     * @param {*} item Указать на элемент, к которому добавляем данное событие
+     * @param {*} item Указатель на элемент, к которому добавляем данное событие
      */
     setEventListenerForRemove(item) {
         //Событие при наведении мыши на крестик
@@ -132,7 +134,7 @@ class toDoList {
         });
 
         //Разворчаиваем массив, если нужно от большего к меньшему
-        if (this.flag === 1) {
+        if (this.sortDirection === 1) {
             this.list.reverse();
         }
 
@@ -145,12 +147,8 @@ class toDoList {
      * */
     updateList() {
         //Удаляем текущий список задач со страницы
-        let oldInputField = document.querySelector('.input-field');
-        oldInputField.remove();
-
-        //Создаем новую область ввода, если все задачи удалены
-        let newInputField = document.createElement('div');
-        newInputField.classList.add('input-field');       
+        let newInputField = document.querySelector('.input-field');
+        newInputField.innerHTML = '';     
 
         //Добавляем введенные задачи
         this.list.forEach((element) => {
@@ -158,12 +156,12 @@ class toDoList {
         });
 
         //Размещаем область ввода на странице
-        let button = document.querySelector('.sort');
-        button.after(newInputField);
+        let sort = document.querySelector('.sort');
+        sort.after(newInputField);
 
     }
 }
 
-let task = document.querySelector('.task')
+let task = document.querySelectorAll('.task')
 let list = new toDoList(task);
 list.init();

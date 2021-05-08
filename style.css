@@ -13,16 +13,24 @@ body {
     border-radius: 12px;   
     margin: auto;
     padding: 0;
+    position: relative;
 }
 
 .band {
-    height: 28px;
+    height: 30px;
     border-radius: 11px 11px 0 0; 
     background: #FFDC40;
+    position: absolute;
+    border-top: 1px solid #C4C4C4;
+    border-right: 1px solid #C4C4C4;
+    border-left: 1px solid #C4C4C4;
+    left: -1px;
+    top: -1px;
+    right: -1px;
 }
 
 .work-space {
-    padding: 15px 30px;
+    padding: 45px 30px 15px 30px;
 }
 
 .title {
@@ -69,7 +77,6 @@ body {
 
 .button {
     margin: 18px auto 0 auto;
-    width: 150px;
-    height: 42px;
     cursor: pointer;
+    text-align: center;
 }
