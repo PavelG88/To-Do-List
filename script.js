@@ -12,7 +12,9 @@ class toDoList {
         this.setEventListenerForSort();
         document.querySelectorAll('.task__img').forEach((element) => {
             this.setEventListenerForRemove(element);
-        });      
+        });
+        this.setEventListenerForDragAndDrop();
+        this.setEventListenerForBin();     
         // console.log(this.list);
     }
 
@@ -20,13 +22,11 @@ class toDoList {
      * Обработчик события при нажатии на кнопку Добавить
      */
      setEventListenerForButton() {
-        let button = document.querySelector('.button');
-        button.addEventListener('click', (event) => {
+        let button = document.querySelector('.button__img');
+        button.addEventListener('click', () => {
             let input = document.querySelector('.task__input');
-
             //Добавление строки в список
             this.addTask(input.value);
-
             //Очистка введенного значения в поле ввода
             input.value = '';
         });
@@ -37,7 +37,7 @@ class toDoList {
      */
     setEventListenerForSort() {
         let sort = document.querySelector('.sort__img');
-        //Событие при наведении мыши на сортировку
+        //Событие при наведении курсора на сортировку
         sort.addEventListener('mouseover', () => {
             sort.src = this.sortDirection !== -1 ? 'images/4.svg' : 'images/2.svg';
         });
@@ -58,7 +58,7 @@ class toDoList {
      * @param {*} item Указатель на элемент, к которому добавляем данное событие
      */
     setEventListenerForRemove(item) {
-        //Событие при наведении мыши на крестик
+        //Событие при наведении курсора на крестик
         item.addEventListener('mouseover', () => {
             item.src = 'images/button-remove-hope.svg';
         });
@@ -71,14 +71,110 @@ class toDoList {
             this.removeTask(event.target.previousElementSibling.name);
         });
     }
+     /**
+      * Обработчик событий при наведении или нажатии на корзину
+      */
+    setEventListenerForBin() {
+        let bin = document.querySelector('.button__img-bin');
+        let tooltip = document.querySelector('.button__tooltip')
+        //Событие при наведении курсора на корзину
+        bin.addEventListener('mouseover', (event) => {
+            bin.src = 'images/bin-hope.svg';
+            tooltip.style.display = 'block';
+        });
+        bin.addEventListener('mousemove', (event) => {
+            tooltip.style.top = event.layerY + 'px';
+            tooltip.style.left = event.layerX + 10 + 'px';
+        });
+        //Событие при убирании курсора с корзины
+        bin.addEventListener('mouseout', () => {
+            bin.src = 'images/bin.svg';
+            tooltip.style.display = 'none';
+            tooltip.style.top = 0;
+            tooltip.style.left = 0;
+        });
+        //Событие при нажатии на корзину (удалить все задачи)
+        bin.addEventListener('click', () => {
+            this.list.splice(1);
+            this.list[0].firstElementChild.value = '';
+            this.updateList();
+        });
+    }
+
+    /**
+     * Обработчик DragAndDrop событий (перемещение по списку элементов, удаление при перетаскивании в корзину)
+     */
+    setEventListenerForDragAndDrop() {
+        let DragAndDropElements = document.querySelector('.input-field');
+        let bin = document.querySelector('.button__img-bin');
+
+        DragAndDropElements.addEventListener('dragstart', (event) => {
+            //Добавляем класс Selected к перемещаемому элементу
+            event.target.classList.add('selected');
+        });
+        DragAndDropElements.addEventListener('dragend', (event) => {
+            //Удаляем класс Selected при отпускании элемента
+            event.target.classList.remove('selected');
+        });
+        DragAndDropElements.addEventListener(`dragover`, (event) => {
+            // Разрешаем сбрасывать элементы в область ввода
+            event.preventDefault();
+            // Находим перемещаемый элемент и элекмент, над которым курсор
+            let activeElement = DragAndDropElements.querySelector(`.selected`);
+            let currentElement = event.target.parentElement;
+            //Проверяем, что перемещаемый элемент не над собой и над задачей
+            let isMoveable = activeElement !== currentElement && currentElement.classList.contains(`task`);
+            // Если элемент над собой или вне списка задач прерываем выполнение функции
+            if (!isMoveable) {
+                return;
+            }
+            // Находим элемент, перед которым будем вставлять перемещаемый
+            let nextElement = () => {
+                // Получаем объект с размерами и координатами
+                let currentElementCoord = currentElement.getBoundingClientRect();
+                // Находим вертикальную координату центра текущего элемента
+                let currentElementCenter = currentElementCoord.y + currentElementCoord.height / 2;
+                // Проверяем положение курсора относительно центра текущего элемента
+                let nextElement = (event.clientY < currentElementCenter) ? currentElement : currentElement.nextElementSibling;
+                return nextElement;
+            };
+            // Перемещаем активный элемент
+            if (!nextElement()) {
+                currentElement.after(activeElement);;
+            } else {
+                nextElement().before(activeElement);
+            }
+        });
+        bin.addEventListener(`dragover`, (event) => {
+            // Разрешаем сбрасывать элементы в корзину
+            event.preventDefault();
+        });
+        bin.addEventListener(`dragenter`, () => {
+            // Изменяем картинку корзины при наведении
+            bin.src = 'images/bin-hope.svg';
+        });
+        bin.addEventListener(`dragleave`, () => {
+            // Возвращаем первоначальную картинку корзины
+            bin.src = 'images/bin.svg';
+        });
+        bin.addEventListener(`drop`, () => {
+            // Находим перемещаемый элемент
+            let activeElement = DragAndDropElements.querySelector(`.selected`);
+            // Удаляем его
+            this.removeTask(activeElement.firstElementChild.name);
+            // Возвращаем первоначальную картинку корзины
+            bin.src = 'images/bin.svg';
+        });
+    }
 
     /**
      * Добавление задачи в список.
-     * @param {*} value Введеная задача
+     * @param {*} value Введенная задача
      */
     addTask(valueTask) {
         let div = document.createElement('div');
         div.classList.add('task');
+        div.draggable = 'true';
 
         let input = document.createElement('input');
         input.classList.add('task__input');
@@ -90,6 +186,7 @@ class toDoList {
         let img = document.createElement('img');
         img.classList.add('task__img');
         img.src = 'images/button-remove.svg';
+        img.draggable = !img.draggable;
         this.setEventListenerForRemove(img);
         div.append(img);
 
@@ -126,11 +223,14 @@ class toDoList {
             let value1 = task1.firstElementChild.value;
             let value2 = task2.firstElementChild.value;
 
-            if (value2 > value1) {
-                return -1;
-            } else {
-                return 1;
+            if(isNaN(value1)) {
+                if (value2 > value1) {
+                    return -1;
+                } else {
+                    return 1;
+                }
             }
+            return value1 - value2;
         });
 
         //Разворчаиваем массив, если нужно от большего к меньшему

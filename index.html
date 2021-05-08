@@ -8,21 +8,22 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="band">
-        </div>
+        <div class="band"></div>
         <div class="work-space">
             <h1 class="title">To-Do List</h1>
             <div class="sort">
-                <img class="sort__img" src="images/3.svg" alt="Sort">
+                <img class="sort__img" src="images/3.svg" alt="Sort" draggable="false">
             </div>
             <div class="input-field">
-                <div class="task">
+                <div class="task" draggable="true">
                     <input class="task__input" name="task1" placeholder="Введите задачу">
-                    <img class="task__img" src="images/button-remove.svg" alt="Sort">
+                    <img class="task__img" src="images/button-remove.svg" alt="Remove" draggable="false">
                 </div>
             </div>
             <div class="button">
-                <img class="button__img" src="images/button.svg" alt="Добавить">
+                <img class="button__img" src="images/button.svg" alt="Добавить" draggable="false">
+                <img class="button__img-bin" src="images/bin.svg" alt="Корзина" draggable="false">
+                <div class="button__tooltip">Remove all tasks</div>
             </div>
         </div>
     </div>

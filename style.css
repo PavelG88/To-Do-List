@@ -77,6 +77,25 @@ body {
 
 .button {
     margin: 18px auto 0 auto;
-    cursor: pointer;
     text-align: center;
+}
+
+.button__img {
+    cursor: pointer;
+}
+
+.button__img-bin {
+    width: 40px;
+    cursor: pointer;
+}
+
+.button__tooltip {
+    display: none;
+    width: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 10px;
+    margin: 0;
+    padding: 2px;
 }
