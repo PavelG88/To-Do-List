@@ -60,7 +60,7 @@ class toDoList {
     setEventListenerForRemove(item) {
         //Событие при наведении курсора на крестик
         item.addEventListener('mouseover', () => {
-            item.src = 'images/button-remove-hope.svg';
+            item.src = 'images/button-remove-hover.svg';
         });
         //Событие при убирании курсора с крестика
         item.addEventListener('mouseout', () => {
@@ -79,7 +79,7 @@ class toDoList {
         let tooltip = document.querySelector('.button__tooltip')
         //Событие при наведении курсора на корзину
         bin.addEventListener('mouseover', (event) => {
-            bin.src = 'images/bin-hope.svg';
+            bin.src = 'images/bin-hover.svg';
             tooltip.style.display = 'block';
         });
         bin.addEventListener('mousemove', (event) => {
@@ -151,7 +151,7 @@ class toDoList {
         });
         bin.addEventListener(`dragenter`, () => {
             // Изменяем картинку корзины при наведении
-            bin.src = 'images/bin-hope.svg';
+            bin.src = 'images/bin-hover.svg';
         });
         bin.addEventListener(`dragleave`, () => {
             // Возвращаем первоначальную картинку корзины
