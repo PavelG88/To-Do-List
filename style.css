@@ -99,3 +99,10 @@ body {
     margin: 0;
     padding: 2px;
 }
+
+.selected {
+    box-sizing: border-box;
+    border: 1px solid #C4C4C4;
+    border-radius: 6px; 
+    padding: 3px;
+}

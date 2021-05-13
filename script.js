@@ -96,7 +96,7 @@ class toDoList {
         //Событие при нажатии на корзину (удалить все задачи)
         bin.addEventListener('click', () => {
             this.list.splice(1);
-            this.list[0].firstElementChild.value = '';
+            this.list[0].querySelector('.task__input').value = '';
             this.updateList();
         });
     }
@@ -105,22 +105,23 @@ class toDoList {
      * Обработчик DragAndDrop событий (перемещение по списку элементов, удаление при перетаскивании в корзину)
      */
     setEventListenerForDragAndDrop() {
-        let DragAndDropElements = document.querySelector('.input-field');
+        let dragAndDropElement = document.querySelector('.input-field');
         let bin = document.querySelector('.button__img-bin');
 
-        DragAndDropElements.addEventListener('dragstart', (event) => {
+        dragAndDropElement.addEventListener('dragstart', (event) => {
             //Добавляем класс Selected к перемещаемому элементу
             event.target.classList.add('selected');
+            // console.dir(event.target);
         });
-        DragAndDropElements.addEventListener('dragend', (event) => {
+        dragAndDropElement.addEventListener('dragend', (event) => {
             //Удаляем класс Selected при отпускании элемента
             event.target.classList.remove('selected');
         });
-        DragAndDropElements.addEventListener(`dragover`, (event) => {
+        dragAndDropElement.addEventListener(`dragover`, (event) => {
             // Разрешаем сбрасывать элементы в область ввода
             event.preventDefault();
             // Находим перемещаемый элемент и элекмент, над которым курсор
-            let activeElement = DragAndDropElements.querySelector(`.selected`);
+            let activeElement = dragAndDropElement.querySelector(`.selected`);
             let currentElement = event.target.parentElement;
             //Проверяем, что перемещаемый элемент не над собой и над задачей
             let isMoveable = activeElement !== currentElement && currentElement.classList.contains(`task`);
@@ -159,9 +160,9 @@ class toDoList {
         });
         bin.addEventListener(`drop`, () => {
             // Находим перемещаемый элемент
-            let activeElement = DragAndDropElements.querySelector(`.selected`);
+            let activeElement = dragAndDropElement.querySelector(`.selected`);
             // Удаляем его
-            this.removeTask(activeElement.firstElementChild.name);
+            this.removeTask(activeElement.querySelector('.task__input').name);
             // Возвращаем первоначальную картинку корзины
             bin.src = 'images/bin.svg';
         });
@@ -204,10 +205,10 @@ class toDoList {
         //Удаляем элемент из массива списка задач
         if (this.list.length !== 1){
             this.list = this.list.filter((item) => {
-                return item.firstElementChild.name !== element;
+                return item.querySelector('.task__input').name !== element;
             });
         } else {
-            this.list[0].firstElementChild.value = '';
+            this.list[0].querySelector('.task__input').value = '';
         }
         
         //Обновляем список задач на странице
@@ -220,8 +221,8 @@ class toDoList {
     sort() {
         //Сортируем массив от меньшего к большему
         this.list = this.list.sort((task1, task2) => {
-            let value1 = task1.firstElementChild.value;
-            let value2 = task2.firstElementChild.value;
+            let value1 = task1.querySelector('.task__input').value;
+            let value2 = task2.querySelector('.task__input').value;
 
             if(isNaN(value1)) {
                 if (value2 > value1) {
